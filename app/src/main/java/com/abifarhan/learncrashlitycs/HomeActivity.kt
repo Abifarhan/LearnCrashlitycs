@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeActivity : AppCompatActivity() {
 
+    var tweetList = ArrayList<Tweet>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -43,11 +44,14 @@ class HomeActivity : AppCompatActivity() {
                             val documents = value.documents
 
                             for (document in documents) {
-                                val tweet = document.get("tweet") as String
+                                val tweetText = document.get("tweet") as String
                                 val email = document.get("user") as String
 
-                                println(tweet)
-                                println(email)
+                                val tweet = Tweet(tweetText, email)
+
+                                tweetList.add(tweet)
+
+
                             }
                         }
                     }
