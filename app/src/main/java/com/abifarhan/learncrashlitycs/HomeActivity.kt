@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        getData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -24,5 +27,31 @@ class HomeActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    fun getData() {
+        FirebaseFirestore.getInstance().collection("Posts")
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Toast.makeText(this, "this error ${error.localizedMessage}", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    if (value != null) {
+                        if (value.isEmpty) {
+                            Toast.makeText(this, "Your data is Empty", Toast.LENGTH_SHORT).show()
+                        }else {
+                            val documents = value.documents
+
+                            for (document in documents) {
+                                val tweet = document.get("tweet") as String
+                                val email = document.get("user") as String
+
+                                println(tweet)
+                                println(email)
+                            }
+                        }
+                    }
+                }
+            }
     }
 }
